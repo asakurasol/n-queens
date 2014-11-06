@@ -178,8 +178,27 @@
         }
       }
       return false; // fixme
-    }
+    },
 
+    testRook: function(row, col){
+      return this.hasRowConflictAt(row) || this.hasColConflictAt(col);
+    },
+
+    testQueen: function(row, col){
+      return this.hasRowConflictAt(row) || this.hasColConflictAt(col) ||
+      this.hasMajorDiagonalConflictAt(col - row) ||
+      this.hasMinorDiagonalConflictAt(row + col);
+    },
+
+    buildMatrix: function(){
+      var result = _.map(this.attributes, function(val, key){
+        if(key !== 'n'){
+          return val.slice();
+        }
+      });
+      result.pop();
+      return result;
+    }
     /*--------------------  End of Helper Functions  ---------------------*/
 
 
