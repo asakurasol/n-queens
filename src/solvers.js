@@ -40,7 +40,6 @@ window.countNRooksSolutions = function(n) {
   var recurse = function(board,row) {
     row = row || 0;
     for(var col = 0; col<n; col++){
-
       board.togglePiece(row, col);
 
       if(board.testRook(row, col)){ //if it fails

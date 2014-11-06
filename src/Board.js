@@ -43,7 +43,7 @@
 
     hasAnyQueenConflictsOn: function(rowIndex, colIndex) {
       return (
-        this.hasRowConflictAt(rowIndex) ||
+        //this.hasRowConflictAt(rowIndex) ||
         this.hasColConflictAt(colIndex) ||
         this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
         this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
@@ -181,7 +181,7 @@
     },
 
     testRook: function(row, col){
-      return this.hasRowConflictAt(row) || this.hasColConflictAt(col);
+      return /*this.hasRowConflictAt(row) ||*/ this.hasColConflictAt(col);
     },
 
     testQueen: function(row, col){
@@ -198,6 +198,40 @@
       });
       result.pop();
       return result;
+    },
+    show: function(){
+      console.table(this.rows());
+    },
+
+    clear: function(){
+      var self = this;
+      _.each(this.rows(), function(row, i){
+        _.each(row, function(el, j){
+          if(el !== 0){
+            self.togglePiece(i , j);
+          }
+        });
+      });
+    },
+
+    save: function(row) {
+      var currentState = this.rows(),
+          state = [];
+      for(var i = 0; i < row; i++){
+        for(j = 0; j< currentState[i].length; j++){
+          if(currentState[i][j]){
+            state.push(j);
+          }
+        }
+      }
+      return state;
+    },
+
+    load: function(state) {
+      this.clear();
+      for(var i = 0; i < state.length; i++){
+        this.togglePiece(i,state[i]);
+      }
     }
     /*--------------------  End of Helper Functions  ---------------------*/
 
