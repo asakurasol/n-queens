@@ -12,6 +12,22 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
+var findSolution = function(row, board, n, funcName, callback) {
+    // find first piece to toggle
+    // check toggled piece for validity
+  row = row || 0;
+  if(row === n){
+    callback();
+    return;
+  }
+  for(var col = 0; col<n; col++){
+    board.togglePiece(row, col);
+    if(!board[funcName](row, col)){
+      findSolution(row+1, board, n, funcName, callback);
+    }
+    board.togglePiece(row, col);
+  }
+};
 
 window.findNRooksSolution = function(n) {
   var solution = new Board({n:n}); //fixme
@@ -37,34 +53,12 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0; //fixme
   var board = new Board({n:n});
-  var recurse = function(board,row) {
-    row = row || 0;
-    for(var col = 0; col<n; col++){
-      board.togglePiece(row, col);
 
-      if(board.testRook(row, col)){ //if it fails
-        board.togglePiece(row, col);
-      } else if(row+1 === n){
-        // console.table(board.buildMatrix());
-        solutionCount++;
-      } else {
-        var matrix = board.buildMatrix();
-        var newBoard = new Board(matrix);
-        board.togglePiece(row, col);
-        recurse(newBoard, row+1);
-      }
-    }
-  };
-  recurse(board);
-  //console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  findSolution(0, board, n, "testRook", function(){
+    solutionCount++;
+  });
   return solutionCount;
-  // var _factorial = function(n){
-  //   if(n === 1){
-  //     return 1;
-  //   }
-  //   return n*_factorial(n-1);
-  // };
-  // return _factorial(n);
+
 };
 
 
@@ -76,7 +70,7 @@ window.findNQueensSolution = function(n) {
   var board = new Board({n:n});
   if(n === 0 || n === 2 || n === 3 ){ return {n:n}; }
 
-  var recurse = function(board,row) {
+  var findSolution = function(board,row) {
     row = row || 0;
     for(var col = 0; col<n; col++){
       board.togglePiece(row, col);
@@ -88,11 +82,11 @@ window.findNQueensSolution = function(n) {
         var matrix = board.buildMatrix();
         var newBoard = new Board(matrix);
         board.togglePiece(row, col);
-        recurse(newBoard, row+1);
+        findSolution(newBoard, row+1);
       }
     }
   };
-  recurse(board);
+  findSolution(board);
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution.buildMatrix();
 };
@@ -102,24 +96,10 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = 0; //fixme
   var board = new Board({n:n});
-  if(n === 0 || n ===1){return 1;}
-  var recurse = function(board,row) {
-    row = row || 0;
-    for(var col = 0; col<n; col++){
-      board.togglePiece(row, col);
-      if(board.testQueen(row, col)){ //if it fails
-        board.togglePiece(row, col);
-      } else if(row+1 === n){
-        solutionCount++;
-      } else {
-        var matrix = board.buildMatrix();
-        var newBoard = new Board(matrix);
-        board.togglePiece(row, col);
-        recurse(newBoard, row+1);
-      }
-    }
-  };
-  recurse(board);
+
+  findSolution(0, board, n, "testQueen", function(){
+    solutionCount++;
+  });
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
