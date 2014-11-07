@@ -17,13 +17,14 @@ var findSolution = function(row, board, n, funcName, callback) {
     // check toggled piece for validity
   row = row || 0;
   if(row === n){
-    callback();
-    return;
+    return callback(board.rows());
   }
   for(var col = 0; col<n; col++){
     board.togglePiece(row, col);
-    if(!board[funcName](row, col)){
-      findSolution(row+1, board, n, funcName, callback);
+    if(!board[funcName](row, col)){ //if valid
+      if(findSolution(row+1, board, n, funcName, callback)){
+        return true;
+      }
     }
     board.togglePiece(row, col);
   }
@@ -58,7 +59,6 @@ window.countNRooksSolutions = function(n) {
     solutionCount++;
   });
   return solutionCount;
-
 };
 
 
@@ -68,27 +68,14 @@ window.findNQueensSolution = function(n) {
 
   var solution; //fixme
   var board = new Board({n:n});
-  if(n === 0 || n === 2 || n === 3 ){ return {n:n}; }
+  solution = board.rows();
 
-  var findSolution = function(board,row) {
-    row = row || 0;
-    for(var col = 0; col<n; col++){
-      board.togglePiece(row, col);
-      if(board.testQueen(row, col)){ //if it fails
-        board.togglePiece(row, col);
-      } else if(row+1 === n){
-        solution = board;
-      } else {
-        var matrix = board.buildMatrix();
-        var newBoard = new Board(matrix);
-        board.togglePiece(row, col);
-        findSolution(newBoard, row+1);
-      }
-    }
-  };
-  findSolution(board);
+  findSolution(0, board, n, "testQueen", function(result){
+    solution = result;
+    return true;
+  });
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution.buildMatrix();
+  return solution;
 };
 
 
