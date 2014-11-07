@@ -199,6 +199,7 @@
       result.pop();
       return result;
     },
+
     show: function(){
       console.table(this.rows());
     },

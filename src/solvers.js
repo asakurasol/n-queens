@@ -31,24 +31,16 @@ var findSolution = function(row, board, n, funcName, callback) {
 };
 
 window.findNRooksSolution = function(n) {
-  var solution = new Board({n:n}); //fixme
-  for(var row = 0; row < n; row++){
-    // get an array, loop through that array
-    for(var col = 0; col < n; col++){
-      solution.togglePiece(row, col);
-      if(solution.testRook(row,col)){
-        solution.togglePiece(row, col);
-      } else {
-        break;
-      }
-    }
-  }
-  var result = solution.buildMatrix();
+  var board = new Board({n:n});
+  var solution = board.rows();
+
+  findSolution(0, board, n, "testRook", function(result){
+    solution = result;
+    return true;
+  });
   //console.log('Single solution for ' + n + ' rooks:', JSON.stringify(result));
-  return result;
+  return solution;
 };
-
-
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
